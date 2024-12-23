@@ -1,0 +1,1519 @@
+﻿<html>
+  <head>
+    <title>⚖️Veritas Council - AI Legal Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/lucide@latest/dist/lucide.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+     :root {
+  --primary-dark: #2a2a2a;
+  --secondary-dark: #333;
+  --text-dark: #fff;
+  --primary-light: #ffffff;
+  --secondary-light: #f0f0f0;
+  --text-light: #000000;
+  --accent: #14F195; 
+  /* THE ACCENT NEEDS TO CHANGE TO #3AA575 when IN BRIGHT THEME. */
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(0, 0, 0, 0.1);
+  --secondary-dark-darker: #2a2a2a; /* Darker shade for sidebar */
+}
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'DM Mono', sans-serif;
+        text-rendering: geometricPrecision;
+      }
+
+      body {
+        background: var(--primary-dark);
+        color: var(--text-dark);
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        width: 300px;
+        background: var(--secondary-dark-darker);
+        padding: 1.5rem;
+        border-right: 1px solid var(--border-dark);
+        animation: fadeIn 0.5s ease;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar.collapsed {
+        margin-left: -300px;
+      }
+
+      .sidebar-toggle {
+        position: absolute;
+        right: -30px;
+        /* Made smaller */
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--secondary-dark-darker);
+        color: var(--text-dark);
+        border: 1px solid var(--border-dark);
+        border-left: none;
+        padding: 0.7rem 0.5rem;
+        /* Made smaller */
+        cursor: pointer;
+        border-radius: 0 8px 8px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-toggle:hover {
+        /* background: rgba(0, 255, 157, 0.1); */
+        background: var(--accent);
+        color: var(--primary);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        animation: fadeIn 0.5s ease 0.2s backwards;
+      }
+
+      .chat-container {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .chat-input {
+        padding: 1rem 2rem;
+        background: var(--secondary-dark-darker);
+        border-top: 1px solid var(--border-dark);
+        display: flex;
+  align-items: center;
+  gap: 1rem;
+      }
+
+      .chat-input input {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-dark);
+        background: var(--primary-dark);
+        color: var(--text-dark);
+        transition: all 0.3s ease;
+        flex: 1;
+      }
+
+      .chat-input input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(0, 255, 157, 0.2);
+      }
+      
+      .logo {
+  font-size: 1.2rem; /* Reduced font size */
+  margin-bottom: 1.5rem; /* Adjusted margin */
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding-left: 0.5rem;
+  font-family: 'DM Mono', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+
+
+.menu-item {
+  padding: 0.8rem 1rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  /* border: 1px solid rgba(255, 255, 255, 0.05); */
+  border: 1px solid var(--border-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+      .menu-item:hover {
+        background: rgba(0, 255, 157, 0.1);
+        transform: scale(1.05);
+        border-color: rgba(0, 255, 157, 0.2);
+        padding-bottom: 1rem;
+      }
+      .menu-item:hover .menu-description {
+  opacity: 1;
+  max-height: 3.6em; /* Approximately 3 lines of text */
+  margin-top: 0.5rem;
+  color: var(--text-dark);
+}
+
+.menu-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.menu-description {
+  font-size: 0.8rem;
+  opacity: 0;
+  max-height: 0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.3rem;
+}
+
+      .menu-item i {
+        width: 20px;
+        height: 20px;
+      }
+
+      .chat-message {
+        margin: 1rem 0;
+        padding: 1rem;
+        border-radius: 8px;
+        background: var(--secondary-dark);
+        max-width: 80%;
+        animation: messageIn 0.3s ease;
+        border: 1px solid var(--border-dark);
+      }
+
+      @keyframes messageIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .bot-message {
+        margin-right: auto;
+      }
+
+      .user-message {
+        margin-left: auto;
+        background: var(--accent);
+        color: var(--text-light);
+      }
+
+      .status-bar {
+        padding: 0.8rem 2rem;
+        background: var(--secondary-dark-darker);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-dark);
+      }
+
+      .pulse {
+        width: 8px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+
+        50% {
+          transform: scale(1.5);
+          opacity: 0.5;
+        }
+
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .thinking {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.thinking.visible {
+  display: flex;
+  opacity: 1;
+}
+
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--accent);
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--primary);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      #toggleIconWrapper {
+        transition: transform 0.3s ease;
+      }
+
+
+      .send-button {
+  background: var(--accent);
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem; /* Reduced padding */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.9rem; /* Slightly smaller font size */
+  transition: all 0.3s ease;
+  height: 40px; /* Set a fixed height */
+}
+
+.send-button:hover {
+  background: #00cc7d;
+}
+
+.send-button svg {
+  scale: 0.8;
+}
+
+/* SUGGESTIONS AREA START */
+.suggestions {
+  padding: 0.5rem 2rem;
+  background: var(--secondary-dark-darker);
+  border-top: 1px solid var(--border-dark);
+  display: flex;
+  gap: 0.5rem; /* Reduced gap */
+  flex-wrap: nowrap; /* Prevent wrapping */
+  margin: 0;
+  overflow-x: auto; /* Allow horizontal scrolling */
+  white-space: nowrap; /* Keep chips in a single line */
+}
+
+
+.suggestion-chip {
+  padding: 0.4rem 0.8rem; /* Reduced padding */
+  background: var(--secondary-dark);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-dark);
+  font-size: 0.8rem; /* Smaller font size */
+  margin: 0.25rem 0;
+  flex-shrink: 0; /* Prevent chips from shrinking */
+}
+
+.suggestion-chip:hover {
+  /* background: var(--gradient); */
+  /* color: var(--primary); */
+  /* transform: translateY(-2px); */
+  /* transform: scale(1.05); */
+  /* border: none; Remove the border on hover */
+  background: rgba(0, 255, 157, 0.1);
+  transform: scale(1.05);
+  border-color: rgba(0, 255, 157, 0.2);
+}
+/* SUGGESTIONS AREA END*/
+
+/* RESET CHAT BUTTON START */
+.reset-chat {
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+  background-color: rgba(255, 77, 77, 0.1);
+  transition: all 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+  width: 32px; /* Smaller initial width */
+  height: 32px; /* Smaller height */
+  padding: 0.45rem;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.reset-chat.visible {
+  display: flex; /* Add this new class */
+}
+
+.reset-chat:hover {
+  background-color: rgba(255, 77, 77, 0.2);
+  width: 110px; /* Expanded width */
+}
+
+.reset-icon {
+  min-width: 16px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.reset-text {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: #ff4d4d;
+  font-size: 0.8rem;
+}
+
+.reset-chat:hover .reset-text {
+  opacity: 1;
+}
+/* RESET CHAT BUTTON END */
+/* WELCOME OVERLAY START */
+.welcome-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #333; /* This will always be dark */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: welcomeFadeOut 1.5s ease-out forwards 2.5s;
+  
+}
+
+.welcome-content {
+  text-align: center;
+}
+
+.welcome-logo {
+  font-size: 3rem;
+  color: #14F195;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: welcomeLogoIn 1s ease forwards;
+}
+
+.welcome-text {
+  font-size: 1.2rem;
+  opacity: 0;
+  animation: welcomeTextIn 1s ease forwards 0.5s;
+  color: #fff;
+}
+
+@keyframes welcomeFadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes welcomeLogoIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes welcomeTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* WELCOME OVERLAY END */
+
+/* MODAL SETTINGS START */
+/* Modal styles */
+
+.modal, .achievement-modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.active, .achievement-modal.active {
+  display: flex;
+}
+
+
+
+.modal-content {
+  background: var(--secondary-dark);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-dark);
+  animation: modalIn 0.3s ease;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.achievement-modal .modal-content {
+  background: var(--secondary-dark);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-dark);
+  animation: modalIn 0.3s ease;
+  padding: 20px;
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  background: var(--secondary-dark);
+  z-index: 1;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-dark);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  color: var(--text-dark);
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+  color: var(--accent);
+  transform: scale(1.1);
+}
+
+.achievements-list {
+  padding: 1.5rem;
+}
+
+.achievement {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background: var(--secondary-dark-darker);
+  transition: all 0.3s ease;
+}
+
+.achievement:hover {
+  /* background: rgba(255,255,255,0.1); */
+  transform: scale(1.02);
+}
+
+.achievement.completed {
+  border: 1px solid var(--accent);
+}
+
+.achievement-check {
+  color: var(--accent);
+}
+
+.achievement:not(.completed) .achievement-check {
+  color: var(--accent);
+}
+
+.achievement-details h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.achievement-details p {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+
+
+
+
+.personality-selection {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  gap: 5em;
+}
+
+.personality-option {
+  text-align: center;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.personality-option:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.personality-option img {
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 50%;
+  
+}
+
+.personality-option.selected::after,
+.personality-option.selected::before {
+  opacity: 1;
+}
+
+.personality-option p {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  margin-top: 1rem;
+}
+
+.theme-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+/* MODAL SETTINGS END */
+
+/* TABLE STYLIGN START */
+table, td, tr, th {
+  box-sizing: border-box;
+  font-family: 'DM Mono', sans-serif;
+  text-rendering: geometricPrecision;
+  border-collapse: collapse;
+  border: 1px solid;
+}
+td {
+  padding: 0.5rem;
+}
+th {
+  justify-content: center;
+  padding: 0.5rem;
+}
+/* TABLE STYLIGN END */
+li {
+  margin-left: 1rem;
+}
+
+/* STYLING PROGRESS BAR START */
+.achievement-progress {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.achievement-progress:hover {
+  transform: scale(1.02);
+}
+
+.progress-label {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-label i {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+
+.progress-percentage {
+  margin-left: auto;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.progress-bar {
+  height: 6px;
+  background: var(--border-dark);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.achievement-modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.achievement-modal.active {
+  display: flex;
+}
+
+/* STYLING PROGRESS BAR END */
+
+/* ENSURING MODALS ARE PROPERLY STYLED START */
+.modal-content, .achievement-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  padding: 0; /* Remove padding from modal-content */
+}
+
+
+
+.achievements-list, .settings-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* Ensure that the scrollbar appears inside the content area */
+.achievements-list::-webkit-scrollbar, .settings-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.achievements-list::-webkit-scrollbar-track, .settings-content::-webkit-scrollbar-track {
+  background: var(--secondary-dark);
+}
+
+.achievements-list::-webkit-scrollbar-thumb, .settings-content::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 4px;
+}
+
+.achievements-list::-webkit-scrollbar-thumb:hover, .settings-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+/* ENSURING MODALS ARE PROPERLY STYLED END */
+
+
+/* LEGAL RESOURCES START*/
+.legal-resources-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.legal-resource-button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--secondary-dark);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+}
+
+.legal-resource-button:hover {
+  background: var(--accent);
+  color: var(--primary-dark);
+}
+
+.legal-resource-button span {
+  flex: 1;
+}
+
+.external-link-icon {
+  width: 16px;
+  height: 16px;
+}
+
+#legalResourcesModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  padding: 0;
+}
+#legalResourcesModal .modal-header {
+  position: sticky;
+  top: 0;
+  background: var(--secondary-dark);
+  z-index: 1;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+#legalResourcesModal .legal-resources-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+#legalResourcesModal .legal-resources-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+#legalResourcesModal .legal-resources-list::-webkit-scrollbar-track {
+  background: var(--secondary-dark);
+}
+
+#legalResourcesModal .legal-resources-list::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 4px;
+}
+
+#legalResourcesModal .legal-resources-list::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+/* LEGAL RESOURCES END*/
+
+.personality-option::after,
+.personality-option::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.personality-option::after {
+  background-color: var(--accent);
+}
+
+.personality-option::before {
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'%3E%3C/path%3E%3Cpolyline points='22 4 12 14.01 9 11.01'%3E%3C/polyline%3E%3C/svg%3E");
+  background-size: contain;
+}
+    </style>
+  </head>
+  <body>
+    <div class="welcome-overlay">
+      <div class="welcome-content">
+        <div class="welcome-logo">
+          <i data-lucide="scale"></i>
+          Veritas Council
+        </div>
+        <div class="welcome-text">Your AI-Powered Cryptocurrency Legal Assistant</div>
+      </div>
+    </div>
+    <div class="sidebar" id="sidebar">
+      <div class="logo">
+        <i data-lucide="scale"></i> Veritas Council
+      </div>
+      <div class="menu-item" id="legalResourcesButton">
+        <div class="menu-item-content">
+          <i data-lucide="book-open"></i> Legal Resources
+        </div>
+        <div class="menu-description">Access comprehensive legal databases and resources</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-content">
+          <i data-lucide="sparkles"></i> Customise
+        </div>
+        <div class="menu-description">Customize your Veritas Council experience</div>
+      </div>
+      <div class="sidebar-toggle" id="sidebarToggle">
+        <div id="toggleIconWrapper">
+          <i data-lucide="chevron-left"></i>
+        </div>
+      </div>
+      <div class="achievement-progress">
+        <div class="progress-label">
+          <i data-lucide="award"></i>
+          Progress <span class="progress-percentage">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="achievement-modal" id="achievementModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Your Learning Progress</h2>
+          <button class="close-modal"><i data-lucide="x"></i></button>
+        </div>
+        <div class="achievements-list">
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>Tokenomics Study</h3>
+              <p>Delve into the study of tokenomics. Understand the critical role of token design in creating sustainable ecosystems and driving long-term success.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>Web2/Web3 UX Analysis</h3>
+              <p>Analyse the differences between Web2 and Web3 user experiences. Study how to bridge the gap by designing products that cater to both audiences.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>Community Dynamics Examination</h3>
+              <p>Examine the dynamics of Web3 communities. Study the expectations of Web3-savvy users and how to create engagement models that foster loyalty and participation.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>Incentive Design Research</h3>
+              <p>Research the design of incentives that align with legal constraints. Study various reward mechanisms and how they can be used to create a thriving ecosystem while remaining legally compliant.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>Interoperability Infrastructure Review</h3>
+              <p>Review the infrastructure required for interoperability between Web2 and Web3 products. Study the use of standards like ERC-20/721 and APIs to create seamless interactions.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>Scalability Planning Analysis</h3>
+              <p>Analyse the planning required for scalability. Study how to anticipate the demands of growing user bases and how to integrate Layer 2 solutions and optimise transaction costs.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>AI Regulation Comprehension</h3>
+              <p>Comprehend the emerging landscape of AI regulations. Study the EU AI Act and ensure your products comply with transparency and risk management requirements.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>Data Governance Principles Study</h3>
+              <p>Study the principles of data governance in a Web3 context. Understand how to classify data, manage transaction data, and oversee the state of smart contracts.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>Gambling Regulation Exploration</h3>
+              <p>Explore the complexities of gambling regulations. Study how to design games that prioritise skill-based mechanics and avoid activities that may fall under the definition of gambling.</p>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-check">
+              <i data-lucide="circle"></i>
+            </div>
+            <div class="achievement-details">
+              <h3>SocialFi Engagement Study</h3>
+              <p>Study how to create engaging, reward-driven SocialFi experiences. Learn how to build a loyal fanbase and turn user interaction into valuable insights for your project.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="legalResourcesModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Legal Resources</h2>
+          <button class="close-modal"><i data-lucide="x"></i></button>
+        </div>
+        <div class="legal-resources-list">
+          <a href="https://bento.me/superteamuk" target="_blank" rel="noopener noreferrer" class="legal-resource-button">
+            <i data-lucide="users"></i>
+            <span>Superteam UK</span>
+            <i data-lucide="external-link" class="external-link-icon"></i>
+          </a>
+          <a href="https://www.fca.org.uk/" target="_blank" rel="noopener noreferrer" class="legal-resource-button">
+            <i data-lucide="shield"></i>
+            <span>FCA UK</span>
+            <i data-lucide="external-link" class="external-link-icon"></i>
+          </a>
+          <a href="https://www.gov.uk/government/organisations/hm-revenue-customs" target="_blank" rel="noopener noreferrer" class="legal-resource-button">
+            <i data-lucide="landmark"></i>
+            <span>HMRC Finance UK</span>
+            <i data-lucide="external-link" class="external-link-icon"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="status-bar">
+        <div>Veritas v1.0</div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <div class="pulse"></div> AI Assistant Active
+        </div>
+      </div>
+	  <div class="chat-container" id="chatContainer">
+        <div class="chat-message bot-message"> Welcome to the Council. I'm your AI legal assistant - Count Veri. How can I help you today? </div>
+        <div class="thinking" id="thinking">
+          <div class="spinner"></div>
+          <div>Thinking...</div>
+        </div>
+      </div>
+      <div class="suggestions">
+        <div class="suggestion-chip reset-chat" id="resetChat">
+          <div class="reset-icon">
+            <i data-lucide="refresh-ccw" style="color: #ff4d4d;"></i>
+          </div>
+          <span class="reset-text">Reset Chat</span>
+        </div>
+        <div class="suggestion-chip">📋 Draft a contract</div>
+        <div class="suggestion-chip">⚖️ Legal advice</div>
+        <div class="suggestion-chip">🔍 Research case law</div>
+        <div class="suggestion-chip">📝 Document review</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="Ask your legal question..." id="userInput">
+        <button class="send-button" id="sendButton">
+          <i data-lucide="send"></i>
+          <span>Send</span>
+        </button>
+      </div>
+    </div>
+    <!-- MODAL START -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Customise</h2>
+          <button class="close-modal"><i data-lucide="x"></i></button>
+        </div>
+        <div class="settings-content">
+          <p style="text-align: center; color: var(--text-dark);">Pick the personality</p>
+          <div class="personality-selection">
+            <div class="personality-option" data-personality="dandy">
+              <img src="{{ url_for('static', filename='images/dandy.jpg') }}" alt="Dandy">
+              <p>Superteam's Dandy</p>
+            </div>
+            <div class="personality-option selected" data-personality="count-veri">
+              <img src="{{ url_for('static', filename='images/lawyer.png') }}" alt="Count Veri">
+              <p>Count Veri</p>
+            </div>
+          </div>
+          <div class="theme-toggle">
+            <span style="color: var(--text-dark); margin-right: 10px;">Dark</span>
+            <label class="switch">
+              <input type="checkbox" id="themeToggle">
+              <span class="slider"></span>
+            </label>
+            <span style="color: var(--text-dark); margin-left: 10px;">Bright</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL END -->
+    <script>
+      const chatContainer = document.getElementById('chatContainer');
+const userInput = document.getElementById('userInput');
+const thinking = document.getElementById('thinking');
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sendButton = document.getElementById('sendButton');
+const resetChat = document.getElementById('resetChat');
+const achievementProgress = document.querySelector('.achievement-progress');
+const achievementModal = document.getElementById('achievementModal');
+const closeModal = document.querySelector('.close-modal');
+const legalResourcesButton = document.getElementById('legalResourcesButton');
+const legalResourcesModal = document.getElementById('legalResourcesModal');
+let completedRequirements = [];
+// Initialize Lucide icons
+lucide.createIcons();
+
+let messages = [{
+  role: 'assistant',
+  content: document.querySelector('.chat-message').textContent
+}];
+
+
+function getSelectedPersonality() {
+  const selectedOption = document.querySelector('.personality-option.selected');
+  return selectedOption ? selectedOption.getAttribute('data-personality') : 'count-veri';
+}
+
+
+achievementProgress.addEventListener('click', () => {
+  achievementModal.classList.add('active');
+});
+
+legalResourcesButton.addEventListener('click', () => {
+  legalResourcesModal.classList.add('active');
+});
+
+document.querySelectorAll('.close-modal').forEach(button => {
+  button.addEventListener('click', function() {
+    this.closest('.modal, .achievement-modal').classList.remove('active');
+  });
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+  if (e.target === achievementModal || e.target === legalResourcesModal) {
+    e.target.classList.remove('active');
+  }
+});
+
+function updateResetButtonVisibility() {
+  const chatMessages = chatContainer.querySelectorAll('.chat-message');
+  if (chatMessages.length > 1) {
+    resetChat.classList.add('visible');
+  } else {
+    resetChat.classList.remove('visible');
+  }
+}
+
+function addMessage(text, sender) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `chat-message ${sender}-message`;
+  messageDiv.innerHTML = text;
+  thinking.parentNode.insertBefore(messageDiv, thinking);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+  updateResetButtonVisibility();
+}
+
+async function sendChatMessage(messages) {
+    try {
+        const personality = getSelectedPersonality();
+        const response = await fetch('/sendChat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ messages: messages, personality: personality }),
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            
+            const chunk = decoder.decode(value);
+            const lines = chunk.split('\n');
+            
+            for (const line of lines) {
+                if (line.trim() === '') continue;
+                const data = JSON.parse(line);
+                
+                if (data.type === 'response') {
+                    addMessage(data.content, 'bot');
+                    messages.push({
+                        role: 'assistant',
+                        content: data.content
+                    });
+                } else if (data.type === 'suggestions') {
+                    updateSuggestions(data);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return 'Sorry, there was an error processing your request.';
+    }
+}
+
+function updateSuggestions(data) {
+    const suggestionContainer = document.querySelector('.suggestions');
+    const resetButton = suggestionContainer.querySelector('#resetChat');
+    const existingChips = suggestionContainer.querySelectorAll('.suggestion-chip:not(#resetChat)');
+
+    existingChips.forEach(chip => chip.remove());
+
+    data.content.forEach((suggestion, index) => {
+        if (index < 4) {
+            const chip = document.createElement('div');
+            chip.className = 'suggestion-chip';
+            chip.textContent = suggestion;
+            chip.addEventListener('click', () => handleUserInput(suggestion.split(' ').slice(1).join(' ')));
+            suggestionContainer.appendChild(chip);
+        }
+    });
+
+    suggestionContainer.insertBefore(resetButton, suggestionContainer.firstChild);
+
+    // Update progress bar based on requirements met
+    updateProgressBar(data.requirements);
+
+    lucide.createIcons();
+}
+
+
+function updateProgressBar(requirements) {
+    const progressFill = document.querySelector('.progress-fill');
+    const progressPercentage = document.querySelector('.progress-percentage');
+    const totalRequirements = 10; // Total number of requirements
+
+    // Add new requirements to the completedRequirements array
+    requirements.forEach(req => {
+        if (!completedRequirements.includes(req)) {
+            completedRequirements.push(req);
+        }
+    });
+
+    const progress = (completedRequirements.length / totalRequirements) * 100;
+    progressFill.style.width = `${progress}%`;
+    progressPercentage.textContent = `${Math.round(progress)}%`;
+
+    // Update the achievements list in the modal
+    updateAchievementsList(completedRequirements);
+}
+
+
+function updateAchievementsList(completedRequirements) {
+    const achievementsList = document.querySelector('.achievements-list');
+    const achievements = achievementsList.querySelectorAll('.achievement');
+
+    achievements.forEach(achievement => {
+        const title = achievement.querySelector('h3').textContent;
+        const iconContainer = achievement.querySelector('.achievement-check');
+        
+        if (completedRequirements.includes(title)) {
+            achievement.classList.add('completed');
+            iconContainer.innerHTML = '<i data-lucide="check-circle"></i>';
+        } else {
+            achievement.classList.remove('completed');
+            iconContainer.innerHTML = '<i data-lucide="circle"></i>';
+        }
+    });
+
+    // Re-initialize Lucide icons after updating
+    lucide.createIcons();
+}
+
+async function handleUserInput(message) {
+    addMessage(message, 'user');
+    thinking.classList.add('visible');
+    
+    messages.push({
+        role: 'user',
+        content: message
+    });
+    
+    try {
+        await sendChatMessage(messages);
+        thinking.classList.remove('visible');
+    } catch (error) {
+        thinking.classList.remove('visible');
+        addMessage('Sorry, there was an error processing your request.', 'bot');
+    }
+}
+
+userInput.addEventListener('keypress', async (e) => {
+  if (e.key === 'Enter' && userInput.value.trim() !== '') {
+    const message = userInput.value.trim();
+    userInput.value = '';
+    await handleUserInput(message);
+  }
+});
+
+sendButton.addEventListener('click', async () => {
+  if (userInput.value.trim() !== '') {
+    const message = userInput.value.trim();
+    userInput.value = '';
+    await handleUserInput(message);
+  }
+});
+
+document.querySelectorAll('.suggestion-chip').forEach(chip => {
+  chip.addEventListener('click', async () => {
+    if (chip.id === 'resetChat') {
+      const chatMessages = chatContainer.querySelectorAll('.chat-message');
+      chatMessages.forEach((message, index) => {
+        if (index !== 0) {
+          message.remove();
+        }
+      });
+
+      messages = [{
+        role: 'assistant',
+        content: chatContainer.querySelector('.chat-message').textContent
+      }];
+
+      chatContainer.scrollTop = 0;
+    } else {
+      const text = chip.textContent.substring(3);
+      await handleUserInput(text);
+    }
+  });
+});
+
+const toggleIconWrapper = document.getElementById('toggleIconWrapper');
+sidebarToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('collapsed');
+  toggleIconWrapper.style.transform = sidebar.classList.contains('collapsed') ? 'rotate(180deg)' : '';
+});
+
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('change', function() {
+  if (this.checked) {
+    document.body.setAttribute('data-theme', 'light');
+    document.body.style.setProperty('--primary-dark', 'var(--primary-light)');
+    document.body.style.setProperty('--secondary-dark', 'var(--secondary-light)');
+    document.body.style.setProperty('--secondary-dark-darker', '#e0e0e0');
+    document.body.style.setProperty('--text-dark', 'var(--text-light)');
+    document.body.style.setProperty('--border-dark', 'var(--border-light)');
+    document.body.style.setProperty('--accent', '#3AA575');
+    
+    document.querySelectorAll('.menu-description').forEach(el => el.style.color = 'rgba(0, 0, 0, 0.7)');
+  } else {
+    document.body.removeAttribute('data-theme');
+    document.body.style.setProperty('--primary-dark', '#2a2a2a');
+    document.body.style.setProperty('--secondary-dark', '#333');
+    document.body.style.setProperty('--secondary-dark-darker', '#2a2a2a');
+    document.body.style.setProperty('--text-dark', '#ffffff');
+    document.body.style.setProperty('--border-dark', 'rgba(255, 255, 255, 0.1)');
+    document.body.style.setProperty('--accent', '#14F195');
+    
+    document.querySelectorAll('.menu-description').forEach(el => el.style.color = 'rgba(255, 255, 255, 0.7)');
+    
+    document.querySelector('.logo').style.textShadow = 'none';
+  }
+});
+
+if (themeToggle.checked) {
+  document.body.setAttribute('data-theme', 'light');
+  document.body.style.setProperty('--primary-dark', 'var(--primary-light)');
+  document.body.style.setProperty('--secondary-dark', 'var(--secondary-light)');
+  document.body.style.setProperty('--secondary-dark-darker', '#e0e0e0');
+  document.body.style.setProperty('--text-dark', 'var(--text-light)');
+  document.body.style.setProperty('--border-dark', 'var(--border-light)');
+  document.body.style.setProperty('--accent', '#3AA575');
+
+  document.querySelectorAll('.menu-description').forEach(el => el.style.color = 'rgba(0, 0, 0, 0.7)');
+}
+
+const settingsModal = document.getElementById("settingsModal");
+const settingsButton = Array.from(document.querySelectorAll('.menu-item-content')).find(el => el.textContent.includes('Customise')).closest('.menu-item');
+const closeModalButtons = document.querySelectorAll('.close-modal');
+
+settingsButton.onclick = function() {
+  settingsModal.classList.add('active');
+}
+
+closeModalButtons.forEach(button => {
+  button.addEventListener('click', function() {
+    this.closest('.modal, .achievement-modal').classList.remove('active');
+  });
+});
+
+window.onclick = function(event) {
+  if (event.target.classList.contains('modal') || event.target.classList.contains('achievement-modal')) {
+    event.target.classList.remove('active');
+  }
+}
+
+resetChat.addEventListener('click', () => {
+    const chatMessages = chatContainer.querySelectorAll('.chat-message');
+    chatMessages.forEach((message, index) => {
+        if (index !== 0) {
+            message.remove();
+        }
+    });
+
+    messages = [{
+        role: 'assistant',
+        content: chatContainer.querySelector('.chat-message').textContent
+    }];
+
+    chatContainer.scrollTop = 0;
+    updateResetButtonVisibility();
+
+    // Reset progress bar and achievements
+    completedRequirements = [];
+    updateProgressBar([]);
+});
+
+
+function initializeAchievements() {
+    const achievements = document.querySelectorAll('.achievement');
+    achievements.forEach(achievement => {
+        achievement.classList.remove('completed');
+        const iconContainer = achievement.querySelector('.achievement-check');
+        iconContainer.innerHTML = '<i data-lucide="circle"></i>';
+    });
+    lucide.createIcons();
+}
+
+
+
+
+
+function updatePersonality() {
+  const personalityOptions = document.querySelectorAll('.personality-option');
+  personalityOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      personalityOptions.forEach(opt => opt.classList.remove('selected'));
+      this.classList.add('selected');
+      const selectedPersonality = this.getAttribute('data-personality');
+      console.log(`Selected personality: ${selectedPersonality}`);
+    });
+  });
+}
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    const activeModals = document.querySelectorAll('.modal.active, .achievement-modal.active');
+    activeModals.forEach(modal => {
+      modal.classList.remove('active');
+    });
+  }
+});
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateResetButtonVisibility();
+    updatePersonality();
+    initializeAchievements();
+});
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+PyMuPDF
+faiss-cpu
+langchain==0.1.19
+chromadb
+google-generativeai==0.4.1
+langchain-google-genai==1.0.1
+langchain-community==0.0.38

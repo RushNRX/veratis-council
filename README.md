@@ -66,7 +66,7 @@ This application can be run locally or using Docker. For compatibility and ease 
 
 1. Ensure you have Docker installed on your system.
 2. Enable the Generative AI API in your Google Cloud Console:
-   https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/overview?project={project id}
+   https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/overview?project={project_id}
 3. Obtain your Google API Key. [Tutorial Video](https://www.youtube.com/watch?v=brCkpzAD0gc)
 4. Build the Docker image:
    ```
@@ -88,7 +88,7 @@ The application will be accessible on port 80, which is the default HTTP port. T
    ```
 3. Install the required dependencies (check requirements.txt).
 4. Enable the Generative AI API in your Google Cloud Console:
-   https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/overview?project={project id}
+   https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/overview?project={project_id}
 5. Obtain your Google API Key. [Tutorial Video](https://www.youtube.com/watch?v=brCkpzAD0gc)
 6. Create a `.env` file in the root directory of the project.
 7. Add your Google API Key to the `.env` file:

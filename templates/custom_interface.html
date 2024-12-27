@@ -1093,7 +1093,7 @@ li {
         </div>
       </div>
 	  <div class="chat-container" id="chatContainer">
-        <div class="chat-message bot-message"> Welcome to the Council. I'm your AI legal assistant - Count Veri. How can I help you today? </div>
+        <div class="chat-message bot-message"> Welcome to the Council. I'm your AI legal assistant - Veritas. How can I help you today? </div>
         <div class="thinking" id="thinking">
           <div class="spinner"></div>
           <div>Thinking...</div>
@@ -1232,27 +1232,37 @@ async function sendChatMessage(messages) {
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
+        let buffer = '';
 
         while (true) {
             const { value, done } = await reader.read();
             if (done) break;
             
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
+            buffer += decoder.decode(value, { stream: true });
+            let boundary = buffer.indexOf('\n');
             
-            for (const line of lines) {
-                if (line.trim() === '') continue;
-                const data = JSON.parse(line);
+            while (boundary !== -1) {
+                const line = buffer.slice(0, boundary);
+                buffer = buffer.slice(boundary + 1);
                 
-                if (data.type === 'response') {
-                    addMessage(data.content, 'bot');
-                    messages.push({
-                        role: 'assistant',
-                        content: data.content
-                    });
-                } else if (data.type === 'suggestions') {
-                    updateSuggestions(data);
+                try {
+                    const data = JSON.parse(line);
+                    
+                    if (data.type === 'response') {
+                        addMessage(data.content, 'bot');
+                        messages.push({
+                            role: 'assistant',
+                            content: data.content
+                        });
+                    } else if (data.type === 'suggestions') {
+                        updateSuggestions(data);
+                    }
+                } catch (parseError) {
+                    console.error('Error parsing JSON:', parseError);
+                    console.log('Problematic line:', line);
                 }
+                
+                boundary = buffer.indexOf('\n');
             }
         }
     } catch (error) {

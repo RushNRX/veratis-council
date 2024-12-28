@@ -100,6 +100,18 @@ The application will be accessible on port 80, which is the default HTTP port. T
 
 The Docker version of this application is ready for deployment. It can be easily deployed on AWS ECR/ECS, allowing for instant browsing on the web.
 
+## Website Preview
+![Intro of Veritas Council](preview/intro.png "The landing page of Veratis Council")
+![Preview of Veritas Council after the Intro](preview/landingchat.png "Preview of Veratis Council")
+![Example conversation using Veritas Council](preview/examplechat.png "Example conversation using Veratis Council")
+![Chip Suggestions as you go along](preview/defaultchips.png "Chip Suggestions as you go along")
+![Gamified Experience Encouraging users to Interact with the platform](preview/progress.png "Gamified Experience Encouraging users to Interact with the platform")
+![Access leading to other UK legal resources](preview/legalresources.png "Access leading to other UK legal resources")
+![Chip Suggestions as you go along](preview/legalresources.png "Chip Suggestions as you go along")
+![Bright Theme Preview](preview/brighttheme.png "Bright Theme Preview")
+![Personality Selection](preview/personality.png "Personality Selection")
+
+
 ## Questions and Support
 
 If you have any questions or need support, please contact me - @rushnrx on Discord.

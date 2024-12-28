@@ -114,7 +114,7 @@ The Docker version of this application is ready for deployment. It can be easily
 ### Access leading to other UK legal resources
 ![Access leading to other UK legal resources](preview/legalresources.png "Access leading to other UK legal resources")
 ### Chip Suggestions as you go along
-![Chip Suggestions as you go along](preview/legalresources.png "Chip Suggestions as you go along")
+![Chip Suggestions as you go along](preview/defaultchips.png "Chip Suggestions as you go along")
 ### Bright Theme Preview
 ![Bright Theme Preview](preview/brighttheme.png "Bright Theme Preview")
 ### Personality Selection
